@@ -1,0 +1,10 @@
+.vercel
+.env*
+node_modules
+dist
+*.log
+*.tsbuildinfo
+.tmp-*
+online-index.js
+*-check.png
+*-checkin-final.png

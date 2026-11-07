@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>ITVM V2.5 規劃書閱讀</title>
+    <style>
+      :root { color-scheme: light; --ink:#16332f; --muted:#58716d; --brand:#087f73; --paper:#fffdfa; --line:#d9e5e2; --bg:#eef7f4; }
+      * { box-sizing:border-box; }
+      body { margin:0; font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; color:var(--ink); background:linear-gradient(145deg,#e5f5f1,#f8fbfa 55%,#ecf0ff); }
+      main { width:min(980px,calc(100% - 28px)); margin:32px auto 146px; }
+      .hero { display:flex; gap:18px; align-items:center; background:#087f73; color:white; padding:24px; border-radius:20px 20px 0 0; }
+      .hero img { width:74px; height:74px; object-fit:contain; border-radius:16px; background:white; }
+      h1 { margin:0 0 4px; font-size:clamp(22px,4vw,32px); }
+      .subtitle { margin:0; opacity:.94; line-height:1.55; }
+      .card { background:var(--paper); border:1px solid var(--line); box-shadow:0 12px 32px rgba(19,70,62,.1); }
+      .notice { padding:18px 24px; border-bottom:1px solid var(--line); line-height:1.65; }
+      .notice strong { color:#00675d; }
+      .tools { display:grid; grid-template-columns:1fr auto; gap:10px; padding:18px 24px; border-bottom:1px solid var(--line); }
+      input { min-width:0; width:100%; border:1px solid #abc5c0; border-radius:10px; padding:12px 14px; font:inherit; }
+      button { border:0; border-radius:10px; background:#1769e0; color:#fff; padding:11px 15px; font:inherit; font-weight:700; cursor:pointer; }
+      button:hover { background:#0954bb; }
+      .hint { margin:0; padding:0 24px 16px; color:var(--muted); font-size:14px; line-height:1.55; }
+      #status { padding:0 24px 10px; color:var(--muted); font-size:14px; }
+      #content { padding:0 24px 30px; }
+      .doc-block { margin:0; }
+      .doc-block p { margin:0; padding:8px 0; line-height:1.8; word-break:break-word; }
+      .doc-heading { color:#00675d; line-height:1.45; margin:30px 0 10px; padding:0 0 8px; border-bottom:2px solid #b7d9d2; scroll-margin-top:20px; }
+      .doc-heading + .doc-heading { margin-top:14px; }
+      .toc-entry { margin:0; padding:0; border-bottom:1px solid #b7d9d2; }
+      .toc-entry a { display:block; padding:18px 16px; color:#00675d; text-decoration:none; }
+      .toc-entry a::after { content:"↗"; float:right; color:#087f73; }
+      .toc-entry a:hover { background:#edf8f5; }
+      .table-wrap { overflow-x:auto; margin:14px 0 22px; border:1px solid var(--line); border-radius:12px; -webkit-overflow-scrolling:touch; }
+      table { border-collapse:collapse; min-width:680px; width:100%; background:white; font-size:14px; line-height:1.55; }
+      th, td { border:1px solid #cfdfdc; padding:9px 10px; text-align:left; vertical-align:top; white-space:pre-wrap; word-break:break-word; }
+      th { background:#e8f5f1; color:#075f55; font-weight:800; }
+      tr:nth-child(even) td { background:#fbfefd; }
+      mark { background:#fff1a8; padding:0 1px; }
+      footer { text-align:center; margin-top:16px; color:var(--muted); font-size:13px; line-height:1.55; }
+      .quick-dock { position:fixed; z-index:20; left:50%; bottom:14px; transform:translateX(-50%); width:min(760px,calc(100% - 20px)); display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; padding:8px; background:rgba(255,253,250,.96); border:1px solid #b9d7d1; border-radius:16px; box-shadow:0 10px 30px rgba(8,72,64,.22); backdrop-filter:blur(10px); }
+      .quick-dock button,.quick-dock a { min-height:56px; display:flex; align-items:center; justify-content:center; text-align:center; border-radius:10px; padding:8px; text-decoration:none; font:700 14px/1.35 inherit; cursor:pointer; }
+      .quick-dock .develop { background:#1769e0; color:#fff; }
+      .quick-dock .reading { background:#087f73; color:#fff; }
+      .quick-dock .review { background:#7438d9; color:#fff; }
+      .quick-dock .develop:hover { background:#0954bb; }.quick-dock .reading:hover{background:#00675d}.quick-dock .review:hover{background:#5d24ba}
+      @media (max-width:560px) { main{width:min(100% - 16px,980px);margin-top:12px;margin-bottom:154px}.hero{padding:18px}.hero img{width:58px;height:58px}.tools{grid-template-columns:1fr}.notice,#content{padding-left:16px;padding-right:16px}.hint{padding-left:16px;padding-right:16px}.doc-block p{font-size:16px}.doc-heading{font-size:20px}.quick-dock{bottom:8px;gap:5px;padding:6px}.quick-dock button,.quick-dock a{min-height:62px;font-size:12px;padding:6px} }
+    </style>
+  </head>
+  <body>
+    <main id="reader-top">
+      <header class="hero">
+        <img src="/program-helper-turn-v2.png" alt="小助手" />
+        <div>
+          <h1 id="title">ITVM 規劃書閱讀</h1>
+          <p id="subtitle" class="subtitle">中文原文／Bản gốc tiếng Trung</p>
+        </div>
+      </header>
+      <section class="card">
+        <div class="notice">
+          <strong>給 Som／Dành cho Som：</strong>本頁保留中文原文。若某段內容看不懂，請在 LINE 協作群組點「Hỗ trợ phát triển」，用越南文說明正在製作的頁面／功能或貼上段落標題；小助手會依這份規劃書說明。<br />
+          Nội dung gốc là tiếng Trung. Nếu chưa hiểu một đoạn, hãy bấm “Hỗ trợ phát triển” trong nhóm LINE, nêu trang/chức năng đang làm hoặc tên phần cần hỏi bằng tiếng Việt; trợ lý sẽ giải thích theo đúng tài liệu này.
+        </div>
+        <div class="tools">
+          <input id="search" type="search" placeholder="搜尋中文關鍵字／Tìm từ khóa tiếng Trung" autocomplete="off" />
+          <button id="copy" type="button">複製開發協作指令<br />Sao chép lệnh phát triển</button>
+        </div>
+        <p class="hint">複製後貼到 LINE 群組，接著以越南文補上正在製作的頁面／功能或段落問題：<code>@AI小助手 開發協作：</code></p>
+        <div id="status">正在載入規劃書… / Đang tải tài liệu…</div>
+        <div id="content" aria-live="polite"></div>
+      </section>
+      <footer>僅供協作群組閱讀；不列入網站導覽與搜尋索引。<br />Chỉ dành cho nhóm hợp tác; không hiển thị trong điều hướng hoặc công cụ tìm kiếm.</footer>
+    </main>
+    <nav class="quick-dock" aria-label="協作功能入口">
+      <button class="develop" id="copy-develop" type="button">🛠<br />Hỗ trợ phát triển</button>
+      <a class="reading" href="#reader-top">📚<br />規劃書／Tài liệu</a>
+      <button class="review" id="copy-review" type="button">🔍<br />成果審核</button>
+    </nav>
+    <script>
+      const content = document.getElementById('content');
+      const status = document.getElementById('status');
+      const search = document.getElementById('search');
+      const copy = document.getElementById('copy');
+      const copyDevelop = document.getElementById('copy-develop');
+      const copyReview = document.getElementById('copy-review');
+      let sourceHtml = '';
+      function draw() {
+        const term = search.value.trim();
+        content.innerHTML = sourceHtml;
+        if (!term) {
+          status.textContent = `已載入 ${content.querySelectorAll('.doc-block').length} 個內容區塊 / Đã tải tài liệu`;
+          return;
+        }
+        const matcher = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        let matches = 0;
+        content.querySelectorAll('p,h2,h3,h4,td,th').forEach(node => {
+          const value = node.textContent || '';
+          if (matcher.test(value)) {
+            matches += 1;
+            node.innerHTML = node.innerHTML.replace(matcher, '<mark>$&</mark>');
+          }
+          matcher.lastIndex = 0;
+        });
+        status.textContent = `標示 ${matches} 個符合內容 / Đánh dấu ${matches} kết quả`;
+        content.querySelector('mark')?.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+      fetch('/itvm-plan-current.json', {cache:'no-store'})
+        .then(r => r.ok ? r.json() : null)
+        .then(meta => {
+          if (!meta) return;
+          document.getElementById('title').textContent = `ITVM ${meta.version} 規劃書閱讀`;
+          document.getElementById('subtitle').textContent = `Tài liệu kế hoạch ITVM ${meta.version} · 更新／Cập nhật: ${meta.publishedDate} · 中文原文／Bản gốc tiếng Trung`;
+        })
+        .catch(() => {});
+      fetch('/itvm-plan-current.html', {cache:'no-store'})
+        .then(r => { if (!r.ok) throw new Error('load failed'); return r.text(); })
+        .then(html => { sourceHtml = html; draw(); })
+        .catch(() => { status.textContent = '無法載入規劃書，請稍後重試。/ Không thể tải tài liệu, vui lòng thử lại.'; });
+      search.addEventListener('input', draw);
+      copy.addEventListener('click', async () => {
+        const command = '@AI小助手 開發協作：';
+        try { await navigator.clipboard.writeText(command); copy.textContent = '已複製／Đã sao chép'; }
+        catch { copy.textContent = command; }
+        setTimeout(() => { copy.innerHTML = '複製開發協作指令<br />Sao chép lệnh phát triển'; }, 1800);
+      });
+      async function copyGroupCommand(button, command, restored) {
+        try { await navigator.clipboard.writeText(command); button.textContent = '已複製／Đã sao chép'; }
+        catch { button.textContent = command; }
+        setTimeout(() => { button.innerHTML = restored; }, 1800);
+      }
+      copyDevelop.addEventListener('click', () => copyGroupCommand(copyDevelop, '@AI小助手 開發協作：', '🛠<br />Hỗ trợ phát triển'));
+      copyReview.addEventListener('click', () => copyGroupCommand(copyReview, '@AI小助手 成果審核：', '🔍<br />成果審核'));
+    </script>
+  </body>
+</html>
